@@ -38,7 +38,7 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 	sudo apt-get -qq update
 	if [ "$CXX" = "g++" ]; then 
-		sudo apt-get install -qq g++-4.8; fi
+		sudo apt-get install -qq g++-4.8;
 		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
 fi
