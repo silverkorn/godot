@@ -51,7 +51,7 @@ matrix:
 #before_script: 
 #  -
 
-script: ./ci/travis-ci.sh
+script: sudo bash ci/travis-ci.sh
 
 #before_deploy: "EXPORT DEPLOY=yes"
 #deploy:
