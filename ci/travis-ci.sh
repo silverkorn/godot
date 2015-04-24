@@ -92,10 +92,9 @@ scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
 ##############
 
 # Deploy the compilation
-if [ "$DEPLOY" == "yes" ]; then
+#if [ "$DEPLOY" == "yes" ]; then
 	# TODO: 
 	#  - http://docs.travis-ci.com/user/deployment/releases/
 	#  - https://github.com/okamstudio/godot/wiki/compiling_batch_templates
 	#  Use $TRAVIS_TAG for version
-fi
-
+#fi
