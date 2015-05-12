@@ -91,16 +91,21 @@ matrix:
   #  compiler: gcc
   #  env: PLATFORM=bb10 TARGET=release TOOLS=no
   
-  # [ MacOSX & iPhone ]
+  # [ MacOSX & iOS ]
   - language: objective-c
+    os: osx
     env: PLATFORM=osx TARGET=release_debug TOOLS=yes
   - language: objective-c
+    os: osx
     env: PLATFORM=osx TARGET=release_debug TOOLS=no
   #- language: objective-c
+  #  os: osx
   #  env: PLATFORM=osx TARGET=release TOOLS=no
   - language: objective-c
+    os: osx
     env: PLATFORM=iphone TARGET=release_debug TOOLS=no
   - language: objective-c
+    os: osx
     env: PLATFORM=iphone TARGET=release TOOLS=no
   
   # [ Android ]
@@ -121,11 +126,10 @@ matrix:
 
 #before_install:
 #  -
-#before_script: 
-#  -
-script: bash ci/travis-ci.sh
+before_script: sudo bash ci/travis-ci/dependencies.sh $PLATFORM && bash ci/travis-ci/prepare.sh
+script: bash ci/travis-ci/build.sh
 #before_deploy: "EXPORT DEPLOY=yes"
-#deploy:
+#deploy: bash ci/travis-ci/deploy.sh
 #after_deploy:
 #  - ./after_deploy_1.sh
 #  - ./after_deploy_2.sh
