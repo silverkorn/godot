@@ -84,7 +84,11 @@ fi
 ############
 
 # Debug
-echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
+echo $PLATFORM
+echo $TOOLS
+echo $TARGET
+echo $BITS
+echo scons -j 4 platform = $PLATFORM tools = $TOOLS target = $TARGET bits = $BITS
 # Standard compiling command
 scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
 
