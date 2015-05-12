@@ -43,6 +43,7 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	apt-get -qq update
 	if [ "$CXX" = "g++" ]; then
 		apt-get install -qq g++-4.8;
+		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
 fi
 
