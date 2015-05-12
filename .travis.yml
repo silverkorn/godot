@@ -27,34 +27,98 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                #
 #***********************************************************************#
 
----
+matrix:
+  include:
+  # [ Linux, Windows, Javascript & Blackberry ]
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: - PLATFORM=windows BITS=32 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=windows BITS=64 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=server BITS=32 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=server BITS=64 TARGET=release TOOLS=no
+  - language: cpp
+    compiler: gcc
+    env: PLATFORM=javascript TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=javascript TARGET=release TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=bb10 TARGET=release_debug TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=bb10 TARGET=release TOOLS=no
+  
+  # [ MacOSX & iPhone ]
+  - language: objective-c
+    env: PLATFORM=osx TARGET=release_debug TOOLS=yes
+  - language: objective-c
+    env: PLATFORM=osx TARGET=release_debug TOOLS=no
+  #- language: objective-c
+  #  env: PLATFORM=osx TARGET=release TOOLS=no
+  - language: objective-c
+    env: PLATFORM=iphone TARGET=release_debug TOOLS=no
+  - language: objective-c
+    env: PLATFORM=iphone TARGET=release TOOLS=no
+  
+  # [ Android ]
+  - language: android
+    android:
+      components:
+        - android-8
+        - android-13
+    jdk: openjdk7
+    env: PLATFORM=android TARGET=release_debug TOOLS=no
+  - language: android
+    android:
+      components:
+        - android-8
+        - android-13
+    jdk: openjdk7
+    env: PLATFORM=android TARGET=release TOOLS=no
 
-language: cpp
-os: linux
-compiler: gcc
-env:
-  matrix:
-    - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
-    - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
-    - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
-    - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
-    
-    - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
-    #- PLATFORM=windows BITS=32 TARGET=release TOOLS=no
-    - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
-    #- PLATFORM=windows BITS=64 TARGET=release TOOLS=no
-    - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
-    #- PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
-    - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
-    #- PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
-    - PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
-    #- PLATFORM=server BITS=32 TARGET=release TOOLS=no
-    - PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
-    #- PLATFORM=server BITS=64 TARGET=release TOOLS=no
-    - PLATFORM=javascript TARGET=release_debug TOOLS=no
-    #- PLATFORM=javascript TARGET=release TOOLS=no
-    #- PLATFORM=bb10 TARGET=release_debug TOOLS=no
-    #- PLATFORM=bb10 TARGET=release TOOLS=no
 #before_install:
 #  -
 #before_script: 
@@ -65,51 +129,3 @@ script: sudo bash ci/travis-ci.sh
 #after_deploy:
 #  - ./after_deploy_1.sh
 #  - ./after_deploy_2.sh
-
----
-
-language: objective-c
-os: osx
-env:
-  matrix:
-    - PLATFORM=osx TARGET=release_debug TOOLS=yes
-    - PLATFORM=osx TARGET=release_debug TOOLS=no
-    #- PLATFORM=osx TARGET=release TOOLS=no
-    - PLATFORM=iphone TARGET=release_debug TOOLS=no
-    - PLATFORM=iphone TARGET=release TOOLS=no
-#before_install:
-#  -
-#before_script: 
-#  -
-script: sudo bash ci/travis-ci.sh
-#before_deploy: "EXPORT DEPLOY=yes"
-#deploy:
-#after_deploy:
-#  - ./after_deploy_1.sh
-#  - ./after_deploy_2.sh
-
----
-
-language: android
-os: linux
-android:
-  components:
-    - android-8
-    - android-13
-jdk: openjdk7
-env:
-  matrix:
-    - PLATFORM=android TARGET=release_debug TOOLS=no
-    - PLATFORM=android TARGET=release TOOLS=no
-#before_install:
-#  -
-#before_script: 
-#  -
-script: sudo bash ci/travis-ci.sh
-#before_deploy: "EXPORT DEPLOY=yes"
-#deploy:
-#after_deploy:
-#  - ./after_deploy_1.sh
-#  - ./after_deploy_2.sh
-
-...
