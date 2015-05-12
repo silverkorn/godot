@@ -3,39 +3,35 @@ matrix:
     - language: cpp
       compiler: gcc
       env:
-        matrix:
-          include:
-            - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
-            - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
-            - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
-            - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
-            
-            - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
-            #- PLATFORM=windows BITS=32 TARGET=release TOOLS=no
-            - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
-            #- PLATFORM=windows BITS=64 TARGET=release TOOLS=no
-            - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
-            #- PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
-            - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
-            #- PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
-            - PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
-            #- PLATFORM=server BITS=32 TARGET=release TOOLS=no
-            - PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
-            #- PLATFORM=server BITS=64 TARGET=release TOOLS=no
-            - PLATFORM=javascript TARGET=release_debug TOOLS=no
-            #- PLATFORM=javascript TARGET=release TOOLS=no
-            #- PLATFORM=bb10 TARGET=release_debug TOOLS=no
-            #- PLATFORM=bb10 TARGET=release TOOLS=no
+        - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
+        - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
+        - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
+        - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
+        
+        - PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
+        #- PLATFORM=windows BITS=32 TARGET=release TOOLS=no
+        - PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
+        #- PLATFORM=windows BITS=64 TARGET=release TOOLS=no
+        - PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
+        #- PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
+        - PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
+        #- PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
+        - PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
+        #- PLATFORM=server BITS=32 TARGET=release TOOLS=no
+        - PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
+        #- PLATFORM=server BITS=64 TARGET=release TOOLS=no
+        - PLATFORM=javascript TARGET=release_debug TOOLS=no
+        #- PLATFORM=javascript TARGET=release TOOLS=no
+        #- PLATFORM=bb10 TARGET=release_debug TOOLS=no
+        #- PLATFORM=bb10 TARGET=release TOOLS=no
             
     - language: objective-c
       env:
-        matrix:
-          include:
-            - PLATFORM=osx TARGET=release_debug TOOLS=yes
-            - PLATFORM=osx TARGET=release_debug TOOLS=no
-            #- PLATFORM=osx TARGET=release TOOLS=no
-            - PLATFORM=iphone TARGET=release_debug TOOLS=no
-            - PLATFORM=iphone TARGET=release TOOLS=no
+        - PLATFORM=osx TARGET=release_debug TOOLS=yes
+        - PLATFORM=osx TARGET=release_debug TOOLS=no
+        #- PLATFORM=osx TARGET=release TOOLS=no
+        - PLATFORM=iphone TARGET=release_debug TOOLS=no
+        - PLATFORM=iphone TARGET=release TOOLS=no
           
     - language: android
       android:
@@ -44,10 +40,8 @@ matrix:
           - android-13
       jdk: openjdk7
       env:
-        matrix:
-          include:
-            - PLATFORM=android TARGET=release_debug TOOLS=no
-            - PLATFORM=android TARGET=release TOOLS=no
+        - PLATFORM=android TARGET=release_debug TOOLS=no
+        - PLATFORM=android TARGET=release TOOLS=no
 
 #before_install:
 #  -
