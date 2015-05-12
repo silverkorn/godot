@@ -41,7 +41,7 @@ BITS=$2
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test
 	apt-get -qq update
-	if [ "$CXX" = "g++" ]; then 
+	if [ "$CXX" = "g++" ]; then
 		apt-get install -qq g++-4.8;
 	fi
 fi
@@ -58,17 +58,23 @@ fi
 #fi
 
 # Javascript
-if [ "$PLATFORM" == "javascript" ]; then 
+if [ "$PLATFORM" == "javascript" ]; then
 	apt-get -qq install emscripten
 fi
 
 # Linux (incl. Server)
-if [ "$PLATFORM" == "x11" ] || [ "$PLATFORM" == "server" ]; then 
+if [ "$PLATFORM" == "x11" ] || [ "$PLATFORM" == "server" ]; then
 	apt-get -qq install scons pkg-config libx11-dev libxcursor-dev build-essential libasound2-dev libfreetype6-dev libgl1-mesa-dev libglu-dev libssl-dev libxinerama-dev
 fi
 
+# MacOSX & iOS
+if [ "$PLATFORM" == "osx" ] || [ "$PLATFORM" == "iphone" ]; then
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	brew install scons
+fi
+
 # Windows
-if [ "$PLATFORM" == "windows" ]; then 
+if [ "$PLATFORM" == "windows" ]; then
 	apt-get -qq install mingw32
 	if [ "$BITS" == "64" ]; then
 		apt-get -qq install mingw-w64

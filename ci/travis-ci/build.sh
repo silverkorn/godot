@@ -33,8 +33,11 @@
 # Building #
 ############
 
-# Debug print of building command
-echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
-
 # Standard building command
-scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
+if [ -z "$BITS" ]; then
+	echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
+	scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
+else
+	echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET
+	scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET
+fi

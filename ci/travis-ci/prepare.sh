@@ -34,14 +34,14 @@
 ###############
 
 # Use GCC 4.8+ for better C++11 support
-if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
-	if [ "$CXX" = "g++" ]; then 
+if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
+	if [ "$CXX" = "g++" ]; then
 		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
 fi
 
 # Android
-if [ "$PLATFORM" == "android" ]; then 
+if [ "$PLATFORM" == "android" ]; then
 	#export ANDROID_HOME=
 	#export ANDROID_NDK_ROOT=
 	mkdir -p platform/android/java/libs/armeabi
@@ -49,7 +49,7 @@ if [ "$PLATFORM" == "android" ]; then
 fi
 
 # Javascript
-if [ "$PLATFORM" == "javascript" ]; then 
+if [ "$PLATFORM" == "javascript" ]; then
 	export EMSCRIPTEN_ROOT=$(em-config EMSCRIPTEN_ROOT)
 fi
 
