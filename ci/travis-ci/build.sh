@@ -33,5 +33,8 @@
 # Building #
 ############
 
-# Standard compiling command
+# Debug print of building command
+echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
+
+# Standard building command
 scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS

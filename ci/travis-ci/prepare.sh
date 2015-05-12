@@ -55,6 +55,8 @@ fi
 
 # Windows
 #if [ "$PLATFORM" == "windows" ]; then
-	#export MINGW32_PREFIX="/usr/lib/i586-mingw32msvc-"
-	#export MINGW64_PREFIX="/usr/lib/i686-w64-mingw32-"
+#	export MINGW32_PREFIX="/usr/lib/i586-mingw32msvc-"
+#	if [ "$BITS" == "64" ]; then
+#		export MINGW64_PREFIX="/usr/lib/i686-w64-mingw32-"
+#	fi
 #fi

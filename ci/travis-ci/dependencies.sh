@@ -31,6 +31,7 @@
 
 # Get platform from argument (Because of `sudo` restriction)
 PLATFORM=$1
+BITS=$2
 
 ################
 # Dependencies #
@@ -68,5 +69,8 @@ fi
 
 # Windows
 if [ "$PLATFORM" == "windows" ]; then 
-	apt-get -qq install mingw32 mingw-w64
+	apt-get -qq install mingw32
+	if [ "$BITS" == "64" ]; then
+		apt-get -qq install mingw-w64
+	fi
 fi
