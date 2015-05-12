@@ -123,7 +123,7 @@ matrix:
 #  -
 #before_script: 
 #  -
-script: sudo bash ci/travis-ci.sh
+script: bash ci/travis-ci.sh
 #before_deploy: "EXPORT DEPLOY=yes"
 #deploy:
 #after_deploy:
