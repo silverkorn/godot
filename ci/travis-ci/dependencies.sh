@@ -75,8 +75,9 @@ fi
 
 # Windows
 if [ "$PLATFORM" == "windows" ]; then
-	apt-get -qq install mingw32
-	if [ "$BITS" == "64" ]; then
+	if [ "$BITS" == "32" ]; then
+		apt-get -qq install mingw32
+	elif [ "$BITS" == "64" ]; then
 		apt-get -qq install mingw-w64
 	fi
 fi
