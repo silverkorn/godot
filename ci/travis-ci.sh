@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #***********************************************************************#
-#  travis-ci.sh                                                             #
+#  travis-ci.sh                                                         #
 #***********************************************************************#
 #                       This file is part of:                           #
 #                           GODOT ENGINE                                #
@@ -55,7 +55,7 @@ fi
 # *** TO FIX: Quit or accept licence agreement automatically
 #if [ "$PLATFORM" == "bb10" ] || [ "$PLATFORM" == "all" ]; then 
 #	# Around 400 MB download
-#	export BB10_SDK_FILENAME=momentics-2.1.2-201503050937.linux.x86_64.run && wget --quiet -P /#tmp/ https://developer.blackberry.com/native/downloads/fetch/$BB10_SDK_FILENAME
+#	export BB10_SDK_FILENAME=momentics-2.1.2-201503050937.linux.x86_64.run && wget --quiet -P /tmp/ https://developer.blackberry.com/native/downloads/fetch/$BB10_SDK_FILENAME
 #	sudo bash /tmp/$BB10_SDK_FILENAME --quiet --nox11 <<END
 #	y
 #	END
@@ -83,6 +83,8 @@ fi
 # Building #
 ############
 
+# Debug
+echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
 # Standard compiling command
 scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
 
