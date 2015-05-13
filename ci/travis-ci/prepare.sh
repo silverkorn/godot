@@ -58,7 +58,7 @@ fi
 
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
-	export EMSCRIPTEN_ROOT=$(em-config EMSCRIPTEN_ROOT)
+	export EMSCRIPTEN_ROOT=$(dirname $(which emcc))
 fi
 
 # Windows
