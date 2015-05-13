@@ -61,6 +61,11 @@ if [ "$PLATFORM" == "javascript" ]; then
 	export EMSCRIPTEN_ROOT=$(dirname $(which emcc))
 fi
 
+# MacOSX & iOS
+if [ "$PLATFORM" == "osx" ] || [ "$PLATFORM" == "iphone" ]; then
+	brew install scons
+fi
+
 # Windows
 #if [ "$PLATFORM" == "windows" ]; then
 #	export MINGW32_PREFIX="/usr/lib/i586-mingw32msvc-"
