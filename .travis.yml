@@ -128,9 +128,10 @@ matrix:
     env: PLATFORM=android TARGET=release TOOLS=no
 
 #before_install:
-#  -
-before_script:
+  #- 
+install:
   - sudo bash ci/travis-ci/dependencies.sh $PLATFORM $BITS
+before_script:
   - bash ci/travis-ci/prepare.sh
 script:
   - bash ci/travis-ci/build.sh

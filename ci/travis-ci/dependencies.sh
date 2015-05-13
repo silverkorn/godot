@@ -45,6 +45,10 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 		apt-get install -qq g++-4.8;
 		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
+	if [ "BITS" == "32" ]; then
+		export CFLAGS=-m32
+		export CXXFLAGS=-m32
+	fi
 fi
 
 # Blackberry 10
@@ -70,17 +74,15 @@ fi
 
 # MacOSX & iOS
 if [ "$PLATFORM" == "osx" ] || [ "$PLATFORM" == "iphone" ]; then
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	#ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	brew install scons
 fi
 
 # Windows
 if [ "$PLATFORM" == "windows" ]; then
 	if [ "$BITS" == "32" ]; then
-		#apt-get -qq install mingw32
 		apt-get -qq install gcc-mingw-w64-i686 g++-mingw-w64-i686 binutils-mingw-w64-i686
 	elif [ "$BITS" == "64" ]; then
-		#apt-get -qq install mingw-w64
 		apt-get -qq install gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
 	fi
 fi

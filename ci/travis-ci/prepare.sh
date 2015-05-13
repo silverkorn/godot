@@ -38,6 +38,10 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	if [ "$CXX" = "g++" ]; then
 		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
+	if [ "BITS" == "32" ]; then
+		export CFLAGS=-m32
+		export CXXFLAGS=-m32
+	fi
 fi
 
 # Android
