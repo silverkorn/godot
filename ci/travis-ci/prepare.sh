@@ -38,7 +38,7 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	if [ "$CXX" = "g++" ]; then
 		export CXX="g++-4.8" CC="gcc-4.8"
 	fi
-	if [ "BITS" == "32" ]; then
+	if [ "$BITS" == "32" ]; then
 		export CFLAGS=-m32
 		export CXXFLAGS=-m32
 	fi
@@ -46,7 +46,11 @@ fi
 
 # Android
 if [ "$PLATFORM" == "android" ]; then
-	#export ANDROID_HOME=
+	echo before ANDROID_HOME = $ANDROID_HOME
+	export ANDROID_HOME=$(dirname $(which android))
+	echo after ANDROID_HOME = $ANDROID_HOME
+	echo ANDROID_NDK_ROOT = $ANDROID_NDK_ROOT
+	locate ndk
 	#export ANDROID_NDK_ROOT=
 	mkdir -p platform/android/java/libs/armeabi
 	mkdir -p platform/android/java/libs/x86
