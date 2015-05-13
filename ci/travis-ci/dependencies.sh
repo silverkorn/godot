@@ -77,8 +77,10 @@ fi
 # Windows
 if [ "$PLATFORM" == "windows" ]; then
 	if [ "$BITS" == "32" ]; then
-		apt-get -qq install mingw32
+		#apt-get -qq install mingw32
+		apt-get -qq install gcc-mingw-w64-i686 g++-mingw-w64-i686 binutils-mingw-w64-i686
 	elif [ "$BITS" == "64" ]; then
-		apt-get -qq install mingw-w64
+		#apt-get -qq install mingw-w64
+		apt-get -qq install gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64
 	fi
 fi

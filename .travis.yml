@@ -132,7 +132,8 @@ matrix:
 before_script:
   - sudo bash ci/travis-ci/dependencies.sh $PLATFORM $BITS
   - bash ci/travis-ci/prepare.sh
-script: bash ci/travis-ci/build.sh
+script:
+  - bash ci/travis-ci/build.sh
 #before_deploy: "EXPORT DEPLOY=yes"
 #deploy: bash ci/travis-ci/deploy.sh
 #after_deploy:
