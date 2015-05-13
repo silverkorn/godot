@@ -46,11 +46,10 @@ fi
 
 # Android
 if [ "$PLATFORM" == "android" ]; then
-	echo before ANDROID_HOME = $ANDROID_HOME
-	export ANDROID_HOME=$(dirname $(which android))
-	echo after ANDROID_HOME = $ANDROID_HOME
-	echo ANDROID_NDK_ROOT = $ANDROID_NDK_ROOT
-	locate ndk
+	#export ANDROID_HOME=$(dirname $(which android)/..)
+	echo ANDROID_HOME = $ANDROID_HOME
+	ls -l /usr/local/
+	ls -l /usr/local/android-sdk/
 	#export ANDROID_NDK_ROOT=
 	mkdir -p platform/android/java/libs/armeabi
 	mkdir -p platform/android/java/libs/x86
