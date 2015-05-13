@@ -73,10 +73,10 @@ if [ "$PLATFORM" == "x11" ] || [ "$PLATFORM" == "server" ]; then
 fi
 
 # MacOSX & iOS
-if [ "$PLATFORM" == "osx" ] || [ "$PLATFORM" == "iphone" ]; then
-	#ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	brew install scons
-fi
+#if [ "$PLATFORM" == "osx" ] || [ "$PLATFORM" == "iphone" ]; then
+#	#ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#	brew install scons
+#fi
 
 # Windows
 if [ "$PLATFORM" == "windows" ]; then
