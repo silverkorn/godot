@@ -64,7 +64,9 @@ fi
 
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
-	apt-get -qq install emscripten
+	#apt-get -qq install emscripten
+	# Thanks to Yao Wei Tjong (Urho3D)
+	wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && tar xfz emsdk-portable.tar.gz && rm emsdk-portable.tar.gz && mv emsdk_portable /usr/local && cd /usr/local/emsdk_portable && ./emsdk update >/dev/null && sed -i.bak 's/-xvf/-xf/g' emsdk && ./emsdk install latest >/dev/null && ./emsdk activate latest >/dev/null && source ./emsdk_env.sh
 fi
 
 # Linux (incl. Server)
