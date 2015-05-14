@@ -127,8 +127,8 @@ matrix:
     jdk: openjdk7
     env: PLATFORM=android TARGET=release TOOLS=no
 
-#before_install:
-  #- 
+before_install:
+  - sudo bash -c 'mkdir -p /usr/local/cached && chmod 775 /usr/local/cached'
 install:
   - sudo bash ci/travis-ci/dependencies.sh $PLATFORM $BITS
 before_script:

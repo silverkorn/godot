@@ -33,6 +33,8 @@
 # Preparation #
 ###############
 
+export CACHED_DIR=/usr/local/cached
+
 # Use GCC 4.8+ for better C++11 support
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	if [ "$CXX" = "g++" ]; then
@@ -58,7 +60,7 @@ fi
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
 	#export EMSCRIPTEN_ROOT=$(dirname $(which emcc))
-	export EMSCRIPTEN_ROOT=/usr/local/emsdk_portable
+	export EMSCRIPTEN_ROOT=$CACHED_DIR/emsdk_portable
 fi
 
 # MacOSX & iOS

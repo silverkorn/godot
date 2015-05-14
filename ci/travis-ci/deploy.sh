@@ -33,6 +33,8 @@
 # Deployment #
 ##############
 
+export $CACHED_DIR=/usr/local/cached
+
 # Deploy the compilation
 #if [ "$DEPLOY" == "yes" ]; then
 	# TODO: 

@@ -29,13 +29,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                #
 #***********************************************************************#
 
-# Get platform from argument (Because of `sudo` restriction)
+# Get information from argument (Because of `sudo` restriction)
 PLATFORM=$1
 BITS=$2
 
 ################
 # Dependencies #
 ################
+
+export CACHED_DIR=/usr/local/cached
 
 # Use GCC 4.8+ for better C++11 support
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
@@ -64,8 +66,25 @@ fi
 
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
-	apt-get -qq install cmake
-	wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz && tar xfz emsdk-portable.tar.gz && rm emsdk-portable.tar.gz && mv emsdk_portable /usr/local && cd /usr/local/emsdk_portable && ./emsdk update >/dev/null && sed -i.bak 's/-xvf/-xf/g' emsdk && ./emsdk install latest >/dev/null && ./emsdk activate latest >/dev/null && source ./emsdk_env.sh
+	# Install CMake (Emscripten dependency)
+	if [ ! -d "$CACHED_DIR/cmake" ]; then
+		wget http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
+		tar xfz cmake-3.2.2-Linux-x86_64.tar.gz && rm cmake-3.2.2-Linux-x86_64.tar.gz
+		mv cmake-3.2.2-Linux-x86_64 cmake && mv cmake $CACHED_DIR
+	fi
+	export PATH=$PATH:/usr/local/cached/cmake/bin
+	
+	# Install Emscripten
+	if [ ! -d "$CACHED_DIR/emsdk_portable" ]; then
+		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz 
+		tar xfz emsdk-portable.tar.gz && rm emsdk-portable.tar.gz
+		mv emsdk_portable $CACHED_DIR && cd $CACHED_DIR/emsdk_portable
+		./emsdk update >/dev/null
+		sed -i.bak 's/-xvf/-xf/g' emsdk
+		./emsdk install latest >/dev/null
+		./emsdk activate latest >/dev/null
+		source ./emsdk_env.sh
+	fi
 fi
 
 # Linux (incl. Server)

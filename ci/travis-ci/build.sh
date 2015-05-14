@@ -33,6 +33,8 @@
 # Building #
 ############
 
+export CACHED_DIR=/usr/local/cached
+
 # Standard building command
 if ! [ "$BITS" == "" ] && ! [ -z "$BITS" ]; then
 	echo scons -j 4 platform=$PLATFORM tools=$TOOLS target=$TARGET bits=$BITS
