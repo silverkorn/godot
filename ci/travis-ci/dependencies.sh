@@ -41,6 +41,9 @@ export CACHED_DIR=/usr/local/cached
 
 # Use GCC 4.8+ for better C++11 support
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
+	if [ "$PLATFORM" == "javascript" ]; then
+		apt-get -qq remove gcc g++
+	fi
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test
 	apt-get -qq update
 	if [ "$CXX" = "g++" ]; then
