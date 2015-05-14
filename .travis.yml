@@ -28,8 +28,8 @@
 #***********************************************************************#
 
 cache:
-  - apt
-  - ccache
+  directories:
+    - /usr/local/cached
 matrix:
   include:
   # [ Linux, Windows, Javascript & Blackberry ]

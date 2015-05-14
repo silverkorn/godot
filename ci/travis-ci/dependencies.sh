@@ -41,18 +41,25 @@ export CACHED_DIR=/usr/local/cached
 
 # Use GCC 4.8+ for better C++11 support
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
-	if [ "$PLATFORM" == "javascript" ]; then
-		apt-get -qq remove gcc g++
-	fi
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test
 	apt-get -qq update
 	if [ "$CXX" = "g++" ]; then
 		apt-get install -qq g++-4.8;
-		export CXX="g++-4.8" CC="gcc-4.8"
+		export CXX="/usr/bin/g++-4.8" CC="/usr/bin/gcc-4.8"
 	fi
 	if [ "$BITS" == "32" ]; then
 		export CFLAGS=-m32
 		export CXXFLAGS=-m32
+	fi
+fi
+
+# Android
+if [ "$PLATFORM" == "android" ]; then
+	if [ ! -d "$CACHED_DIR/android-ndk" ]; then
+		wget http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin
+		chmod 775 android-ndk-r10e-linux-x86_64.bin
+		./android-ndk-r10e-linux-x86_64.bin -y > /dev/null
+		mv android-ndk-r10e android-ndk && mv android-ndk $CACHED_DIR
 	fi
 fi
 
