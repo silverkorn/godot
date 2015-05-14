@@ -68,6 +68,7 @@ fi
 if [ "$PLATFORM" == "javascript" ]; then
 	# Install CMake (Emscripten dependency)
 	if [ ! -d "$CACHED_DIR/cmake" ]; then
+		apt-get -qq remove cmake
 		wget http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
 		tar xfz cmake-3.2.2-Linux-x86_64.tar.gz && rm cmake-3.2.2-Linux-x86_64.tar.gz
 		mv cmake-3.2.2-Linux-x86_64 cmake && mv cmake $CACHED_DIR
