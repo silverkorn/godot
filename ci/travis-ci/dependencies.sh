@@ -65,6 +65,7 @@ if [ "$PLATFORM" == "android" ]; then
 		chmod 775 android-ndk-r10e-linux-x86_64.bin
 		./android-ndk-r10e-linux-x86_64.bin -y > /dev/null
 		mv android-ndk-r10e android-ndk && mv android-ndk $CACHED_DIR
+		chmod -R 775 $CACHED_DIR/android-ndk
 	fi
 fi
 
@@ -87,6 +88,7 @@ if [ "$PLATFORM" == "javascript" ]; then
 		wget http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
 		tar xfz cmake-3.2.2-Linux-x86_64.tar.gz && rm cmake-3.2.2-Linux-x86_64.tar.gz
 		mv cmake-3.2.2-Linux-x86_64 cmake && mv cmake $CACHED_DIR
+		chmod -R 775 $CACHED_DIR/cmake
 	fi
 	export PATH=$PATH:/usr/local/cached/cmake/bin
 	
@@ -95,6 +97,7 @@ if [ "$PLATFORM" == "javascript" ]; then
 		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz 
 		tar xfz emsdk-portable.tar.gz && rm emsdk-portable.tar.gz
 		mv emsdk_portable $CACHED_DIR && pushd $CACHED_DIR/emsdk_portable
+		chmod -R 775 $CACHED_DIR/emsdk_portable
 		./emsdk update >/dev/null
 		sed -i.bak 's/-xvf/-xf/g' emsdk
 		./emsdk install latest >/dev/null
@@ -102,6 +105,7 @@ if [ "$PLATFORM" == "javascript" ]; then
 		source ./emsdk_env.sh
 		popd
 	fi
+	export PATH=$PATH:/usr/local/cached/emsdk_portable
 fi
 
 # Linux (incl. Server)

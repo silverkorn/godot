@@ -61,7 +61,7 @@ fi
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
 	#export EMSCRIPTEN_ROOT=$(dirname $(which emcc))
-	export EMSCRIPTEN_ROOT=$CACHED_DIR/emsdk_portable
+	export EMSCRIPTEN_ROOT=$(em-config EMSCRIPTEN_ROOT)
 fi
 
 # MacOSX & iOS
