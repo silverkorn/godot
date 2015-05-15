@@ -45,7 +45,7 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	apt-get -qq update
 	if [ "$CXX" = "g++" ]; then
 		if [ "$PLATFORM" == "javascript" ]; then
-			apt-get install g++-4.7;
+			apt-get install -y g++-4.7;
 			export CXX="g++-4.7" CC="gcc-4.7"
 		else
 			apt-get install -qq g++-4.8;
@@ -105,7 +105,7 @@ if [ "$PLATFORM" == "javascript" ]; then
 		source ./emsdk_env.sh
 		popd
 	fi
-	export PATH=$PATH:/usr/local/cached/emsdk_portable
+	export PATH=$PATH:$CACHED_DIR/emsdk_portable
 fi
 
 # Linux (incl. Server)

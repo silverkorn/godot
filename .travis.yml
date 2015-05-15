@@ -117,14 +117,14 @@ matrix:
       components:
         - android-8
         - android-13
-    jdk: openjdk7
+    jdk: openjdk6
     env: PLATFORM=android TARGET=release_debug TOOLS=no
   - language: android
     android:
       components:
         - android-8
         - android-13
-    jdk: openjdk7
+    jdk: openjdk6
     env: PLATFORM=android TARGET=release TOOLS=no
 
 before_install:
