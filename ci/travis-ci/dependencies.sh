@@ -45,7 +45,7 @@ if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then
 	apt-get -qq update
 	if [ "$CXX" = "g++" ]; then
 		if [ "$PLATFORM" == "javascript" ]; then
-			apt-get install -qq g++-4.7;
+			apt-get install g++-4.7;
 			export CXX="g++-4.7" CC="gcc-4.7"
 		else
 			apt-get install -qq g++-4.8;
@@ -94,12 +94,13 @@ if [ "$PLATFORM" == "javascript" ]; then
 	if [ ! -d "$CACHED_DIR/emsdk_portable" ]; then
 		wget https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz 
 		tar xfz emsdk-portable.tar.gz && rm emsdk-portable.tar.gz
-		mv emsdk_portable $CACHED_DIR && cd $CACHED_DIR/emsdk_portable
+		mv emsdk_portable $CACHED_DIR && pushd $CACHED_DIR/emsdk_portable
 		./emsdk update >/dev/null
 		sed -i.bak 's/-xvf/-xf/g' emsdk
 		./emsdk install latest >/dev/null
 		./emsdk activate latest >/dev/null
 		source ./emsdk_env.sh
+		popd
 	fi
 fi
 
