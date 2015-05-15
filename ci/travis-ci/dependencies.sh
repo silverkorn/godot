@@ -43,13 +43,13 @@ export CACHED_DIR=/usr/local/cached
 if ! [ "$PLATFORM" == "osx" ] && ! [ "$PLATFORM" == "iphone" ]; then 
 	add-apt-repository -y ppa:ubuntu-toolchain-r/test
 	apt-get -qq update
-	if [ "$CXX" = "g++" ]; then
-		if [ "$PLATFORM" == "javascript" ]; then
-			apt-get install -y g++-4.7;
-			export CXX="g++-4.7" CC="gcc-4.7"
-		else
-			apt-get install -qq g++-4.8;
-			export CXX="g++-4.8" CC="gcc-4.8"
+	if [ "$PLATFORM" == "javascript" ]; then
+		apt-get install -y g++-4.7;
+		export CXX="g++-4.7" CC="gcc-4.7"
+	else
+		if ! [ "$CXX" == "g++-4.8" ]; then
+				apt-get install -qq g++-4.8;
+				export CXX="g++-4.8" CC="gcc-4.8"
 		fi
 	fi
 	if [ "$BITS" == "32" ]; then
