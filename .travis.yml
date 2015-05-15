@@ -33,83 +33,83 @@ cache:
 matrix:
   include:
   # [ Linux, Windows, Javascript & Blackberry ]
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
   #- language: cpp
   #  compiler: gcc
-  #  env: - PLATFORM=windows BITS=32 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=yes
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=windows BITS=64 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=yes
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=yes
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=yes
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=server BITS=32 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=windows BITS=32 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: - PLATFORM=windows BITS=32 TARGET=release TOOLS=no
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=server BITS=64 TARGET=release TOOLS=no
-  - language: cpp
-    compiler: gcc
-    env: PLATFORM=javascript TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=windows BITS=64 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=windows BITS=64 TARGET=release TOOLS=no
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=javascript TARGET=release TOOLS=no
+  #  env: PLATFORM=x11 BITS=32 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=x11 BITS=32 TARGET=release TOOLS=no
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=bb10 TARGET=release_debug TOOLS=no
+  #  env: PLATFORM=x11 BITS=64 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=x11 BITS=64 TARGET=release TOOLS=no
   #- language: cpp
   #  compiler: gcc
-  #  env: PLATFORM=bb10 TARGET=release TOOLS=no
+  #  env: PLATFORM=server BITS=32 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=server BITS=32 TARGET=release TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=server BITS=64 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=server BITS=64 TARGET=release TOOLS=no
+  #- language: cpp
+  #  compiler: gcc
+  #  env: PLATFORM=javascript TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=javascript TARGET=release TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=bb10 TARGET=release_debug TOOLS=no
+  ##- language: cpp
+  ##  compiler: gcc
+  ##  env: PLATFORM=bb10 TARGET=release TOOLS=no
   
   # [ MacOSX & iOS ]
-  - language: objective-c
-    os: osx
-    env: PLATFORM=osx TARGET=release_debug TOOLS=yes
-  - language: objective-c
-    os: osx
-    env: PLATFORM=osx TARGET=release_debug TOOLS=no
   #- language: objective-c
   #  os: osx
-  #  env: PLATFORM=osx TARGET=release TOOLS=no
-  - language: objective-c
-    os: osx
-    env: PLATFORM=iphone TARGET=release_debug TOOLS=no
-  - language: objective-c
-    os: osx
-    env: PLATFORM=iphone TARGET=release TOOLS=no
+  #  env: PLATFORM=osx TARGET=release_debug TOOLS=yes
+  #- language: objective-c
+  #  os: osx
+  #  env: PLATFORM=osx TARGET=release_debug TOOLS=no
+  ##- language: objective-c
+  ##  os: osx
+  ##  env: PLATFORM=osx TARGET=release TOOLS=no
+  #- language: objective-c
+  #  os: osx
+  #  env: PLATFORM=iphone TARGET=release_debug TOOLS=no
+  #- language: objective-c
+  #  os: osx
+  #  env: PLATFORM=iphone TARGET=release TOOLS=no
   
   # [ Android ]
   - language: android
