@@ -55,6 +55,7 @@ if [ "$PLATFORM" == "android" ]; then
 	export ANDROID_NDK_ROOT=$CACHED_DIR/android-ndk
 	echo ANDROID_NDK_ROOT = $CACHED_DIR/android-ndk
 	ls -l $ANDROID_NDK_ROOT
+	export PATH=$PATH:$ANDROID_HOME:$ANDROID_NDK_ROOT
 	mkdir -p platform/android/java/libs/armeabi
 	mkdir -p platform/android/java/libs/x86
 fi
@@ -62,6 +63,7 @@ fi
 # Javascript
 if [ "$PLATFORM" == "javascript" ]; then
 	#export EMSCRIPTEN_ROOT=$(dirname $(which emcc))
+	export PATH=$PATH:$CACHED_DIR/emsdk_portable
 	export EMSCRIPTEN_ROOT=$(em-config EMSCRIPTEN_ROOT)
 fi
 
