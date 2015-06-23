@@ -81,7 +81,7 @@ matrix:
   #- language: cpp
   #  compiler: gcc
   #  env: PLATFORM=server BITS=64 TARGET=release TOOLS=no
-    language: cpp
+  - language: cpp
     compiler: gcc
     env: PLATFORM=javascript TARGET=release_debug TOOLS=no
   #- language: cpp
