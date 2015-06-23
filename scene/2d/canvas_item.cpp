@@ -35,7 +35,7 @@
 #include "scene/resources/font.h"
 #include "scene/resources/texture.h"
 #include "scene/resources/style_box.h"
-
+#include "os/input.h"
 
 bool CanvasItemMaterial::_set(const StringName& p_name, const Variant& p_value) {
 
@@ -288,6 +288,7 @@ void CanvasItem::show() {
 	if (is_visible()) {
 		_propagate_visibility_changed(true);
 	}
+	_change_notify("visibility/visible");
 }
 
 
@@ -305,6 +306,7 @@ void CanvasItem::hide() {
 	if (propagate)
 		_propagate_visibility_changed(false);
 
+	_change_notify("visibility/visible");
 }
 
 
@@ -1010,6 +1012,16 @@ InputEvent CanvasItem::make_input_local(const InputEvent& p_event) const {
 }
 
 
+Vector2 CanvasItem::get_global_mouse_pos() const {
+
+	return get_viewport_transform().affine_inverse().xform(Input::get_singleton()->get_mouse_pos());
+}
+Vector2 CanvasItem::get_local_mouse_pos() const{
+
+	return (get_viewport_transform() * get_global_transform()).affine_inverse().xform(Input::get_singleton()->get_mouse_pos());
+}
+
+
 void CanvasItem::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("_sort_children"),&CanvasItem::_sort_children);
@@ -1075,6 +1087,8 @@ void CanvasItem::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_viewport_transform"),&CanvasItem::get_viewport_transform);
 	ObjectTypeDB::bind_method(_MD("get_viewport_rect"),&CanvasItem::get_viewport_rect);
 	ObjectTypeDB::bind_method(_MD("get_canvas_transform"),&CanvasItem::get_canvas_transform);
+	ObjectTypeDB::bind_method(_MD("get_local_mouse_pos"),&CanvasItem::get_local_mouse_pos);
+	ObjectTypeDB::bind_method(_MD("get_global_mouse_pos"),&CanvasItem::get_global_mouse_pos);
 	ObjectTypeDB::bind_method(_MD("get_canvas"),&CanvasItem::get_canvas);
 	ObjectTypeDB::bind_method(_MD("get_world_2d"),&CanvasItem::get_world_2d);
 	//ObjectTypeDB::bind_method(_MD("get_viewport"),&CanvasItem::get_viewport);

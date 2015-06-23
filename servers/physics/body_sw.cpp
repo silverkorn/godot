@@ -257,10 +257,13 @@ void BodySW::set_state(PhysicsServer::BodyState p_state, const Variant& p_varian
 				Transform t = p_variant;
 				t.orthonormalize();
 				new_transform=get_transform(); //used as old to compute motion
+				if (new_transform==t)
+					break;
 				_set_transform(t);
 				_set_inv_transform(get_transform().inverse());
 
 			}
+			wakeup();
 
 		} break;
 		case PhysicsServer::BODY_STATE_LINEAR_VELOCITY: {
@@ -268,11 +271,13 @@ void BodySW::set_state(PhysicsServer::BodyState p_state, const Variant& p_varian
 			//if (mode==PhysicsServer::BODY_MODE_STATIC)
 			//	break;
 			linear_velocity=p_variant;
+			wakeup();
 		} break;
 		case PhysicsServer::BODY_STATE_ANGULAR_VELOCITY: {
 			//if (mode!=PhysicsServer::BODY_MODE_RIGID)
 			//	break;
 			angular_velocity=p_variant;
+			wakeup();
 
 		} break;
 		case PhysicsServer::BODY_STATE_SLEEPING: {
@@ -357,9 +362,12 @@ void BodySW::set_space(SpaceSW *p_space){
 void BodySW::_compute_area_gravity(const AreaSW *p_area) {
 
 	if (p_area->is_gravity_point()) {
-
-		gravity += (p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin()).normalized() * p_area->get_gravity();
-
+		if(p_area->get_gravity_distance_scale() > 0) {
+			Vector3 v = p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin();
+			gravity += v.normalized() * (p_area->get_gravity() / Math::pow(v.length() * p_area->get_gravity_distance_scale()+1, 2) );
+		} else {
+			gravity += (p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin()).normalized() * p_area->get_gravity();
+		}
 	} else {
 		gravity += p_area->get_gravity_vector() * p_area->get_gravity();
 	}

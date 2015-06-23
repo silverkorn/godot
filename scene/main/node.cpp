@@ -641,6 +641,7 @@ void Node::_add_child_nocheck(Node* p_child,const StringName& p_name) {
 	p_child->data.pos=data.children.size();
 	data.children.push_back( p_child );
 	p_child->data.parent=this;
+	p_child->notification(NOTIFICATION_PARENTED);
 
 	if (data.tree) {
 		p_child->_set_tree(data.tree);
@@ -649,7 +650,6 @@ void Node::_add_child_nocheck(Node* p_child,const StringName& p_name) {
 	/* Notify */
 	//recognize childs created in this node constructor
 	p_child->data.parent_owned=data.in_constructor;
-	p_child->notification(NOTIFICATION_PARENTED);
 	add_child_notify(p_child);
 
 
@@ -838,6 +838,28 @@ Node *Node::get_node(const NodePath& p_path) const {
 bool Node::has_node(const NodePath& p_path) const {
 
 	return _get_node(p_path)!=NULL;
+}
+
+
+Node* Node::find_node(const String& p_mask,bool p_recursive,bool p_owned) const {
+
+	Node * const*cptr = data.children.ptr();
+	int ccount = data.children.size();
+	for(int i=0;i<ccount;i++) {
+		if (p_owned && !cptr[i]->data.owner)
+			continue;
+		if (cptr[i]->data.name.operator String().match(p_mask))
+			return cptr[i];
+
+		if (!p_recursive)
+			continue;
+
+		Node* ret = cptr[i]->find_node(p_mask,true,p_owned);
+		if (ret)
+			return ret;
+	}
+	return NULL;
+
 }
 
 Node *Node::get_parent() const {
@@ -1417,6 +1439,41 @@ void Node::_duplicate_and_reown(Node* p_new_parent, const Map<Node*,Node*>& p_re
 
 }
 
+
+void Node::_duplicate_signals(const Node* p_original,Node* p_copy) const {
+
+	if (this!=p_original && get_owner()!=p_original)
+		return;
+
+	List<Connection> conns;
+	get_all_signal_connections(&conns);
+
+	for (List<Connection>::Element *E=conns.front();E;E=E->next()) {
+
+		if (E->get().flags&CONNECT_PERSIST) {
+			//user connected
+			NodePath p = p_original->get_path_to(this);
+			Node *copy = p_copy->get_node(p);
+
+			Node *target = E->get().target->cast_to<Node>();
+			if (!target)
+				continue;
+			NodePath ptarget = p_original->get_path_to(target);
+			Node *copytarget = p_copy->get_node(ptarget);
+
+			if (copy && copytarget) {
+				copy->connect(E->get().signal,copytarget,E->get().method,E->get().binds,CONNECT_PERSIST);
+			}
+		}
+	}
+
+	for(int i=0;i<get_child_count();i++) {
+		get_child(i)->_duplicate_signals(p_original,p_copy);
+	}
+
+}
+
+
 Node *Node::duplicate_and_reown(const Map<Node*,Node*>& p_reown_map) const {
 
 
@@ -1455,6 +1512,7 @@ Node *Node::duplicate_and_reown(const Map<Node*,Node*>& p_reown_map) const {
 		get_child(i)->_duplicate_and_reown(node,p_reown_map);
 	}
 
+	_duplicate_signals(this,node);
 	return node;
 
 }
@@ -1758,6 +1816,16 @@ void Node::get_argument_options(const StringName& p_function,int p_idx,List<Stri
 	Object::get_argument_options(p_function,p_idx,r_options);
 }
 
+
+void Node::clear_internal_tree_resource_paths() {
+
+	clear_internal_resource_paths();
+	for(int i=0;i<data.children.size();i++) {
+		data.children[i]->clear_internal_tree_resource_paths();
+	}
+
+}
+
 void Node::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("set_name","name"),&Node::set_name);
@@ -1771,6 +1839,7 @@ void Node::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("has_node","path"),&Node::has_node);
 	ObjectTypeDB::bind_method(_MD("get_node:Node","path"),&Node::get_node);
 	ObjectTypeDB::bind_method(_MD("get_parent:Parent"),&Node::get_parent);
+	ObjectTypeDB::bind_method(_MD("find_node:Node","mask","recursive","owned"),&Node::get_node,DEFVAL(true),DEFVAL(true));
 	ObjectTypeDB::bind_method(_MD("has_node_and_resource","path"),&Node::has_node_and_resource);
 	ObjectTypeDB::bind_method(_MD("get_node_and_resource","path"),&Node::_get_node_and_resource);
 

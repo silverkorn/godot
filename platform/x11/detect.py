@@ -55,6 +55,7 @@ def get_opts():
 	('use_leak_sanitizer','Use llvm compiler sanitize memory leaks','no'),
 	('pulseaudio','Detect & Use pulseaudio','yes'),
 	('new_wm_api', 'Use experimental window management API','no'),
+	('debug_release', 'Add debug symbols to release version','no'),
 	]
   
 def get_flags():
@@ -108,8 +109,11 @@ def configure(env):
 
 
 	if (env["target"]=="release"):
-		
-		env.Append(CCFLAGS=['-O2','-ffast-math','-fomit-frame-pointer'])
+
+		if (env["debug_release"]=="yes"):
+			env.Append(CCFLAGS=['-g2'])
+		else:
+			env.Append(CCFLAGS=['-O3','-ffast-math'])
 
 	elif (env["target"]=="release_debug"):
 

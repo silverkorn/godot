@@ -275,10 +275,13 @@ void Body2DSW::set_state(Physics2DServer::BodyState p_state, const Variant& p_va
 				Matrix32 t = p_variant;
 				t.orthonormalize();
 				new_transform=get_transform(); //used as old to compute motion
+				if (t==new_transform)
+					break;
 				_set_transform(t);
 				_set_inv_transform(get_transform().inverse());
 
 			}
+			wakeup();
 
 		} break;
 		case Physics2DServer::BODY_STATE_LINEAR_VELOCITY: {
@@ -286,12 +289,14 @@ void Body2DSW::set_state(Physics2DServer::BodyState p_state, const Variant& p_va
 			//if (mode==Physics2DServer::BODY_MODE_STATIC)
 			//	break;
 			linear_velocity=p_variant;
+			wakeup();
 
 		} break;
 		case Physics2DServer::BODY_STATE_ANGULAR_VELOCITY: {
 			//if (mode!=Physics2DServer::BODY_MODE_RIGID)
 			//	break;
 			angular_velocity=p_variant;
+			wakeup();
 
 		} break;
 		case Physics2DServer::BODY_STATE_SLEEPING: {
@@ -378,9 +383,12 @@ void Body2DSW::set_space(Space2DSW *p_space){
 void Body2DSW::_compute_area_gravity(const Area2DSW *p_area) {
 
 	if (p_area->is_gravity_point()) {
-
-		gravity += (p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin()).normalized() * p_area->get_gravity();
-
+		if(p_area->get_gravity_distance_scale() > 0) {
+			Vector2 v = p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin();
+			gravity += v.normalized() * (p_area->get_gravity() / Math::pow(v.length() * p_area->get_gravity_distance_scale()+1, 2) );
+		} else {
+			gravity += (p_area->get_transform().xform(p_area->get_gravity_vector()) - get_transform().get_origin()).normalized() * p_area->get_gravity();
+		}
 	} else {
 		gravity += p_area->get_gravity_vector() * p_area->get_gravity();
 	}
@@ -654,6 +662,7 @@ Body2DSW::Body2DSW() : CollisionObject2DSW(TYPE_BODY), active_list(this), inerti
 	area_linear_damp=0;
 	contact_count=0;
 	gravity_scale=1.0;
+	using_one_way_cache=false;
 	one_way_collision_max_depth=0.1;
 
 	still_time=0;

@@ -30,6 +30,7 @@ void Navigation::_navmesh_link(int p_id) {
 		p.edges.resize(plen);
 
 		Vector3 center;
+		float sum=0;
 
 		for(int j=0;j<plen;j++) {
 
@@ -44,7 +45,18 @@ void Navigation::_navmesh_link(int p_id) {
 			center+=ep;
 			e.point=_get_point(ep);
 			p.edges[j]=e;
+
+			if (j>=2) {
+				Vector3 epa = nm.xform.xform(r[indices[j-2]]);
+				Vector3 epb = nm.xform.xform(r[indices[j-1]]);
+
+				sum+=up.dot((epb-epa).cross(ep-epa));
+
+			}
+
 		}
+
+		p.clockwise=sum>0;
 
 		if (!valid) {
 			nm.polygons.pop_back();
@@ -73,9 +85,14 @@ void Navigation::_navmesh_link(int p_id) {
 			} else {
 
 				if (C->get().B!=NULL) {
-					print_line(String()+_get_vertex(ek.a)+" -> "+_get_vertex(ek.b));
+					ConnectionPending pending;
+					pending.polygon=&p;
+					pending.edge=j;
+					p.edges[j].P=C->get().pending.push_back(pending);
+					continue;
+					//print_line(String()+_get_vertex(ek.a)+" -> "+_get_vertex(ek.b));
 				}
-				ERR_CONTINUE(C->get().B!=NULL); //wut
+				//ERR_CONTINUE(C->get().B!=NULL); //wut
 
 				C->get().B=&p;
 				C->get().B_edge=j;
@@ -114,8 +131,13 @@ void Navigation::_navmesh_unlink(int p_id) {
 
 			EdgeKey ek(edges[i].point,edges[next].point);
 			Map<EdgeKey,Connection>::Element *C=connections.find(ek);
+
 			ERR_CONTINUE(!C);
-			if (C->get().B) {
+
+			if (edges[i].P) {
+				C->get().pending.erase(edges[i].P);
+				edges[i].P=NULL;
+			} else if (C->get().B) {
 				//disconnect
 
 				C->get().B->edges[C->get().B_edge].C=NULL;
@@ -130,6 +152,20 @@ void Navigation::_navmesh_unlink(int p_id) {
 				}
 				C->get().B=NULL;
 				C->get().B_edge=-1;
+
+				if (C->get().pending.size()) {
+					//reconnect if something is pending
+					ConnectionPending cp = C->get().pending.front()->get();
+					C->get().pending.pop_front();
+
+					C->get().B=cp.polygon;
+					C->get().B_edge=cp.edge;
+					C->get().A->edges[C->get().A_edge].C=cp.polygon;
+					C->get().A->edges[C->get().A_edge].C_edge=cp.edge;
+					cp.polygon->edges[cp.edge].C=C->get().A;
+					cp.polygon->edges[cp.edge].C_edge=C->get().A_edge;
+					cp.polygon->edges[cp.edge].P=NULL;
+				}
 
 			} else {
 				connections.erase(C);
@@ -399,7 +435,8 @@ Vector<Vector3> Navigation::get_simple_path(const Vector3& p_start, const Vector
 					left = _get_vertex(p->edges[prev].point);
 					right = _get_vertex(p->edges[prev_n].point);
 
-					if (CLOCK_TANGENT(apex_point,left,(left+right)*0.5).dot(up) < 0){
+					//if (CLOCK_TANGENT(apex_point,left,(left+right)*0.5).dot(up) < 0){
+					if (p->clockwise) {
 						SWAP(left,right);
 					}
 				}

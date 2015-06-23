@@ -479,6 +479,11 @@ Error ProjectExportDialog::export_platform(const String& p_platform, const Strin
 	if (err!=OK) {
 		error->set_text("Error exporting project!");
 		error->popup_centered_minsize();
+		ERR_PRINT("Exporting failed!");
+		if (p_quit_after) {
+			OS::get_singleton()->set_exit_code(255);
+			get_tree()->quit();
+		}
 		return ERR_CANT_CREATE;
 	} else {
 		if (p_quit_after) {
@@ -558,7 +563,7 @@ void ProjectExportDialog::_update_group_list() {
 
 		TreeItem *ti = groups->create_item(r);
 		ti->set_text(0,E->get());
-		ti->add_button(0,get_icon("Del","EditorIcons"));
+		ti->add_button(0,get_icon("Remove","EditorIcons"));
 		if (E->get()==current) {
 			ti->select(0);
 		}
@@ -1337,9 +1342,9 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 
 	expopt="--,Export,Bundle";
 
-	file_export = memnew( FileDialog );
+	file_export = memnew( EditorFileDialog );
 	add_child(file_export);
-	file_export->set_access(FileDialog::ACCESS_FILESYSTEM);
+	file_export->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 	file_export->set_current_dir( EditorSettings::get_singleton()->get("global/default_project_export_path") );
 
 	file_export->set_title("Export Project");
@@ -1356,8 +1361,8 @@ ProjectExportDialog::ProjectExportDialog(EditorNode *p_editor) {
 	file_export_password->set_editable(false);
 	file_export->get_vbox()->add_margin_child("Password:",file_export_password);
 
-	pck_export = memnew( FileDialog );
-	pck_export->set_access(FileDialog::ACCESS_FILESYSTEM);
+	pck_export = memnew( EditorFileDialog );
+	pck_export->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
 	pck_export->set_current_dir( EditorSettings::get_singleton()->get("global/default_project_export_path") );
 	pck_export->set_title("Export Project PCK");
 	pck_export->connect("file_selected", this,"_export_action_pck");
@@ -1648,7 +1653,7 @@ Error ProjectExport::export_project(const String& p_preset) {
 
 			if (saver.is_null()) {
 				memdelete(d);
-				ERR_EXPLAIN("Preset '"+preset+"' references unexisting saver: "+type);
+				ERR_EXPLAIN("Preset '"+preset+"' references nonexistent saver: "+type);
 				ERR_FAIL_COND_V(saver.is_null(),ERR_INVALID_DATA);
 			}
 

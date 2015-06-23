@@ -2216,6 +2216,14 @@ void SpatialEditorViewport::reset() {
 
 SpatialEditorViewport::SpatialEditorViewport(SpatialEditor *p_spatial_editor, EditorNode *p_editor, int p_index) {
 
+	_edit.mode=TRANSFORM_NONE;
+	_edit.plane=TRANSFORM_VIEW;
+	_edit.edited_gizmo=0;
+	_edit.snap=1;
+	_edit.gizmo_handle=0;
+
+
+
 	index=p_index;
 	editor=p_editor;
 	editor_selection=editor->get_editor_selection();;
@@ -3172,11 +3180,11 @@ void SpatialEditor::_init_indicators() {
 				int arrow_sides=6;
 
 
-				for(int i = 0; i < 7 ; i++) {
+				for(int k = 0; k < 7 ; k++) {
 
 
-					Matrix3 ma(ivec,Math_PI*2*float(i)/arrow_sides);
-					Matrix3 mb(ivec,Math_PI*2*float(i+1)/arrow_sides);
+					Matrix3 ma(ivec,Math_PI*2*float(k)/arrow_sides);
+					Matrix3 mb(ivec,Math_PI*2*float(k+1)/arrow_sides);
 
 
 					for(int j=0;j<arrow_points-1;j++) {
@@ -3372,6 +3380,7 @@ void SpatialEditor::_notification(int p_what) {
 		tool_button[SpatialEditor::TOOL_MODE_ROTATE]->set_icon( get_icon("ToolRotate","EditorIcons") );
 		tool_button[SpatialEditor::TOOL_MODE_SCALE]->set_icon( get_icon("ToolScale","EditorIcons") );
 		instance_button->set_icon( get_icon("SpatialAdd","EditorIcons") );
+		instance_button->hide();
 
 
 		view_menu->get_popup()->set_item_icon(view_menu->get_popup()->get_item_index(MENU_VIEW_USE_1_VIEWPORT),get_icon("Panels1","EditorIcons"));
@@ -3614,6 +3623,8 @@ void SpatialEditor::_default_light_angle_input(const InputEvent& p_event) {
 
 SpatialEditor::SpatialEditor(EditorNode *p_editor) {
 
+	gizmo.visible=true;
+	gizmo.scale=1.0;
 
 	viewport_environment = Ref<Environment>( memnew( Environment ) );
 	undo_redo=p_editor->get_undo_redo();

@@ -35,6 +35,7 @@
 #include "print_string.h"
 #include "servers/physics/physics_server_sw.h"
 
+
 #include "X11/Xutil.h"
 
 #include "X11/Xatom.h"
@@ -317,8 +318,8 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	/* set the name and class hints for the window manager to use */
 	classHint = XAllocClassHint();
 	if (classHint) {
-		classHint->res_name = "Godot";
-		classHint->res_class = "Godot";
+		classHint->res_name = (char *)"Godot";
+		classHint->res_class = (char *)"Godot";
 	}
 	XSetClassHint(x11_display, x11_window, classHint);
 	XFree(classHint);
@@ -426,7 +427,8 @@ void OS_X11::initialize(const VideoMode& p_desired,int p_video_driver,int p_audi
 	//
 	physics_server = memnew( PhysicsServerSW );
 	physics_server->init();
-	physics_2d_server = memnew( Physics2DServerSW );
+	//physics_2d_server = memnew( Physics2DServerSW );
+	physics_2d_server = Physics2DServerWrapMT::init_server<Physics2DServerSW>();
 	physics_2d_server->init();
 
 	input = memnew( InputDefault );

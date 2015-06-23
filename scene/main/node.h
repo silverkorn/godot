@@ -114,6 +114,7 @@ private:
 	Node *_get_node(const NodePath& p_path) const;
 
 
+
 	void _validate_child_name(Node *p_name);
 
 	void _propagate_reverse_notification(int p_notification);	
@@ -126,6 +127,7 @@ private:
 	void _propagate_pause_owner(Node*p_owner);
 	Array _get_node_and_resource(const NodePath& p_path);
 
+	void _duplicate_signals(const Node* p_original,Node* p_copy) const;
 	void _duplicate_and_reown(Node* p_new_parent, const Map<Node*,Node*>& p_reown_map) const;
 	Array _get_children() const;
 	Array _get_groups() const;
@@ -170,6 +172,7 @@ public:
 		NOTIFICATION_PROCESS = 17,
 		NOTIFICATION_PARENTED=18,
 		NOTIFICATION_UNPARENTED=19,
+		NOTIFICATION_INSTANCED=20,
 	};
 			
 	/* NODE/TREE */			
@@ -184,6 +187,7 @@ public:
 	Node *get_child(int p_index) const;
 	bool has_node(const NodePath& p_path) const;
 	Node *get_node(const NodePath& p_path) const;
+	Node* find_node(const String& p_mask,bool p_recursive=true,bool p_owned=true) const;
 	bool has_node_and_resource(const NodePath& p_path) const;
 	Node *get_node_and_resource(const NodePath& p_path,RES& r_res) const;
 	
@@ -285,6 +289,8 @@ public:
 #endif
 
 	void get_argument_options(const StringName& p_function,int p_idx,List<String>*r_options) const;
+
+	void clear_internal_tree_resource_paths();
 
 	_FORCE_INLINE_ Viewport *get_viewport() const { return data.viewport; }
 

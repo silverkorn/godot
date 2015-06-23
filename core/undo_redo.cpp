@@ -234,11 +234,17 @@ void UndoRedo::_process_operation_list(List<Operation>::Element *E) {
 			ERR_FAIL_COND(!obj);
 
 		}
+
 		switch(op.type) {
 
 			case Operation::TYPE_METHOD: {
 
-				obj->call(op.name,VARIANT_ARGS_FROM_ARRAY(op.args));
+				obj->call(op.name,VARIANT_ARGS_FROM_ARRAY(op.args));				
+#ifdef TOOLS_ENABLED
+				Resource* res = obj->cast_to<Resource>();
+				if (res)
+					res->set_edited(true);
+#endif
 			} break;
 			case Operation::TYPE_PROPERTY: {
 
@@ -276,6 +282,7 @@ void UndoRedo::undo() {
 		return; //nothing to redo
 	_process_operation_list(actions[current_action].undo_ops.front());
 	current_action--;
+	version--;
 }
 
 void UndoRedo::clear_history() {
@@ -286,7 +293,7 @@ void UndoRedo::clear_history() {
 	while(actions.size())
 		_pop_history_tail();
 
-	version++;
+	//version++;
 }
 
 String UndoRedo::get_current_action_name() const {
@@ -320,7 +327,7 @@ void UndoRedo::set_commit_notify_callback(CommitNotifyCallback p_callback,void* 
 
 UndoRedo::UndoRedo() {
 
-	version=0;
+	version=1;
 	action_level=0;
 	current_action=-1;
 	max_steps=-1;

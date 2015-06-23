@@ -5,7 +5,7 @@
 #include "io/base64.h"
 #include "core/globals.h"
 #include "io/file_access_encrypted.h"
-
+#include "os/keyboard.h"
 _ResourceLoader *_ResourceLoader::singleton=NULL;
 
 Ref<ResourceInteractiveLoader> _ResourceLoader::load_interactive(const String& p_path,const String& p_type_hint) {
@@ -457,9 +457,9 @@ void _OS::set_icon(const Image& p_icon) {
 	OS::get_singleton()->set_icon(p_icon);
 }
 
-Dictionary _OS::get_date() const {
+Dictionary _OS::get_date(bool utc) const {
 
-	OS::Date date = OS::get_singleton()->get_date();
+	OS::Date date = OS::get_singleton()->get_date(utc);
 	Dictionary dated;
 	dated["year"]=date.year;
 	dated["month"]=date.month;
@@ -470,9 +470,9 @@ Dictionary _OS::get_date() const {
 
 
 }
-Dictionary _OS::get_time() const {
+Dictionary _OS::get_time(bool utc) const {
 
-	OS::Time time = OS::get_singleton()->get_time();
+	OS::Time time = OS::get_singleton()->get_time(utc);
 	Dictionary timed;
 	timed["hour"]=time.hour;
 	timed["minute"]=time.min;
@@ -480,6 +480,15 @@ Dictionary _OS::get_time() const {
 	return timed;
 
 }
+
+Dictionary _OS::get_time_zone_info() const {
+	OS::TimeZoneInfo info = OS::get_singleton()->get_time_zone_info();
+	Dictionary infod;
+	infod["bias"] = info.bias;
+	infod["name"] = info.name;
+	return infod;
+}
+
 uint64_t _OS::get_unix_time() const {
 
 	return OS::get_singleton()->get_unix_time();
@@ -694,6 +703,20 @@ String _OS::get_custom_level() const {
 
 	return OS::get_singleton()->get_custom_level();
 }
+
+String _OS::get_scancode_string(uint32_t p_code) const {
+
+	return keycode_get_string(p_code);
+}
+bool _OS::is_scancode_unicode(uint32_t p_unicode) const {
+
+	return keycode_has_unicode(p_unicode);
+}
+int _OS::find_scancode_from_string(const String& p_code) const {
+
+	return find_keycode(p_code);
+}
+
 _OS *_OS::singleton=NULL;
 
 void _OS::_bind_methods() {
@@ -760,8 +783,9 @@ void _OS::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("get_cmdline_args"),&_OS::get_cmdline_args);
 	ObjectTypeDB::bind_method(_MD("get_main_loop"),&_OS::get_main_loop);
 
-	ObjectTypeDB::bind_method(_MD("get_date"),&_OS::get_date);
-	ObjectTypeDB::bind_method(_MD("get_time"),&_OS::get_time);
+	ObjectTypeDB::bind_method(_MD("get_date","utc"),&_OS::get_date,DEFVAL(false));
+	ObjectTypeDB::bind_method(_MD("get_time","utc"),&_OS::get_time,DEFVAL(false));
+	ObjectTypeDB::bind_method(_MD("get_time_zone_info"),&_OS::get_time_zone_info);
 	ObjectTypeDB::bind_method(_MD("get_unix_time"),&_OS::get_unix_time);
 
 	ObjectTypeDB::bind_method(_MD("set_icon"),&_OS::set_icon);
@@ -810,6 +834,9 @@ void _OS::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("native_video_stop"),&_OS::native_video_stop);
 	ObjectTypeDB::bind_method(_MD("native_video_pause"),&_OS::native_video_pause);
 
+	ObjectTypeDB::bind_method(_MD("get_scancode_string","code"),&_OS::get_scancode_string);
+	ObjectTypeDB::bind_method(_MD("is_scancode_unicode","code"),&_OS::is_scancode_unicode);
+	ObjectTypeDB::bind_method(_MD("find_scancode_from_string","string"),&_OS::find_scancode_from_string);
 
 	ObjectTypeDB::bind_method(_MD("set_use_file_access_save_and_swap","enabled"),&_OS::set_use_file_access_save_and_swap);
 
@@ -1740,7 +1767,9 @@ _Mutex::~_Mutex(){
 
 void _Thread::_start_func(void *ud) {
 
-	_Thread *t=(_Thread*)ud;
+	Ref<_Thread>* tud=(Ref<_Thread>*)ud;
+	Ref<_Thread> t=*tud;
+	memdelete(tud);
 	Variant::CallError ce;
 	const Variant* arg[1]={&t->userdata};
 	t->ret=t->target_instance->call(t->target_method,arg,1,ce);
@@ -1787,9 +1816,11 @@ Error _Thread::start(Object *p_instance,const StringName& p_method,const Variant
 	userdata=p_userdata;
 	active=true;
 
+	Ref<_Thread> *ud = memnew( Ref<_Thread>(this) );
+
 	Thread::Settings s;
 	s.priority=(Thread::Priority)p_priority;
-	thread = Thread::create(_start_func,this,s);
+	thread = Thread::create(_start_func,ud,s);
 	if (!thread) {
 		active=false;
 		target_method=StringName();
@@ -1850,5 +1881,8 @@ _Thread::_Thread() {
 
 _Thread::~_Thread() {
 
+	if (active) {
+		ERR_EXPLAIN("Reference to a Thread object object was lost while the thread is still running..");
+	}
 	ERR_FAIL_COND(active==true);
 }

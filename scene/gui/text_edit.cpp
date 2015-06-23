@@ -489,7 +489,7 @@ void TextEdit::_notification(int p_what) {
 								
 								CharType cc = text[i][j];
 								//ignore any brackets inside a string
-								if (cc== '"' | cc == '\'') {
+								if (cc== '"' || cc == '\'') {
 									CharType quotation = cc;
 									do {
 										j++;
@@ -560,7 +560,7 @@ void TextEdit::_notification(int p_what) {
 								
 								CharType cc = text[i][j];
 								//ignore any brackets inside a string
-								if (cc== '"' | cc == '\'') {
+								if (cc== '"' || cc == '\'') {
 									CharType quotation = cc;
 									do {
 										j--;
@@ -1249,7 +1249,7 @@ void TextEdit::_input_event(const InputEvent& p_input_event) {
 					}
 					
 					
-					if (!mb.doubleclick && (OS::get_singleton()->get_ticks_msec()-last_dblclk)<600) {
+					if (!mb.doubleclick && (OS::get_singleton()->get_ticks_msec()-last_dblclk)<600 && cursor.line==prev_line) {
 						//tripleclick select line
 						select(cursor.line,0,cursor.line,text[cursor.line].length());
 						last_dblclk=0;
@@ -1440,7 +1440,7 @@ void TextEdit::_input_event(const InputEvent& p_input_event) {
 							
 						} else {
 							//different char, go back
-							const CharType chr[2] = {k.unicode, 0};
+							const CharType chr[2] = {(CharType)k.unicode, 0};
 							if(auto_brace_completion_enabled && _is_pair_symbol(chr[0])) {
 								_consume_pair_symbol(chr[0]);
 							} else {
@@ -1552,7 +1552,7 @@ void TextEdit::_input_event(const InputEvent& p_input_event) {
 					case KEY_HOME:
 					case KEY_END:
 						// ignore arrows if any modifiers are held (shift = selecting, others may be used for editor hotkeys)
-						if (k.mod.command || k.mod.shift || k.mod.alt || k.mod.command)
+						if (k.mod.command || k.mod.shift || k.mod.alt)
 							break;
 						unselect=true;
 						break;
@@ -1893,7 +1893,7 @@ void TextEdit::_input_event(const InputEvent& p_input_event) {
 					selection.from_line=0;
 					selection.from_column=0;
 					selection.to_line=text.size()-1;
-					selection.to_column=text[selection.to_line].size();
+					selection.to_column=text[selection.to_line].length();
 					selection.selecting_mode=Selection::MODE_NONE;
 					update();
 					
@@ -2062,7 +2062,7 @@ void TextEdit::_input_event(const InputEvent& p_input_event) {
 					if (readonly)
 						break;
 					
-					const CharType chr[2] = {k.unicode, 0};
+					const CharType chr[2] = {(CharType)k.unicode, 0};
 					
 					if(auto_brace_completion_enabled && _is_pair_symbol(chr[0])) {
 						_consume_pair_symbol(chr[0]);
@@ -2778,6 +2778,11 @@ void TextEdit::copy() {
 	if (!selection.active)
 		return;
 	
+	print_line("from line: "+itos(selection.from_line));
+	print_line("from column: "+itos(selection.from_column));
+	print_line("to line: "+itos(selection.to_line));
+	print_line("to column: "+itos(selection.to_column));
+
 	String clipboard = _base_get_text(selection.from_line,selection.from_column,selection.to_line,selection.to_column);
 	OS::get_singleton()->set_clipboard(clipboard);
 	
@@ -2809,7 +2814,7 @@ void TextEdit::select_all() {
 	selection.from_line=0;
 	selection.from_column=0;
 	selection.to_line=text.size()-1;
-	selection.to_column=text[selection.to_line].size();
+	selection.to_column=text[selection.to_line].length();
 	selection.selecting_mode=Selection::MODE_NONE;
 	update();
 	
@@ -3494,6 +3499,9 @@ void TextEdit::set_line(int line, String new_text)
 		return;
 	_remove_text(line, 0, line, text[line].length());
 	_insert_text(line, 0, new_text);
+	if (cursor.line==line) {
+		cursor.column=MIN(cursor.column,new_text.length());
+	}
 }
 
 void TextEdit::insert_at(const String &p_text, int at)
@@ -3593,6 +3601,10 @@ TextEdit::TextEdit()  {
 	set_focus_mode(FOCUS_ALL);
 	_update_caches();
 	cache.size=Size2(1,1);
+	cache.row_height=1;
+	cache.line_spacing=1;
+	cache.line_number_w=1;
+
 	tab_size=4;
 	text.set_tab_size(tab_size);
 	text.clear();

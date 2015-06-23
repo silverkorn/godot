@@ -28,7 +28,7 @@
 /*************************************************************************/
 #include "editor_font_import_plugin.h"
 #include "scene/gui/dialogs.h"
-#include "scene/gui/file_dialog.h"
+#include "tools/editor/editor_file_dialog.h"
 #include "tools/editor/editor_node.h"
 #include "os/file_access.h"
 #include "editor_atlas.h"
@@ -379,8 +379,8 @@ class EditorFontImportDialog : public ConfirmationDialog {
 	OBJ_TYPE(EditorFontImportDialog, ConfirmationDialog);
 
 
-	LineEditFileChooser *source;
-	LineEditFileChooser *dest;
+	EditorLineEditFileChooser *source;
+	EditorLineEditFileChooser *dest;
 	SpinBox *font_size;
 	LineEdit *test_string;
 	ColorPickerButton *test_color;
@@ -406,7 +406,10 @@ class EditorFontImportDialog : public ConfirmationDialog {
 			imd->set_option(opt,v);
 		}
 
-		imd->add_source(EditorImportPlugin::validate_source_path(source->get_line_edit()->get_text()));
+		String src_path = EditorImportPlugin::validate_source_path(source->get_line_edit()->get_text());
+		//print_line("pre src path "+source->get_line_edit()->get_text());
+		//print_line("src path "+src_path);
+		imd->add_source(src_path);
 		imd->set_option("font/size",font_size->get_val());
 
 		return imd;
@@ -609,9 +612,9 @@ public:
 		hbc->add_child(vbr);
 		vbr->set_h_size_flags(SIZE_EXPAND_FILL);
 
-		source = memnew( LineEditFileChooser );
-		source->get_file_dialog()->set_access(FileDialog::ACCESS_FILESYSTEM);
-		source->get_file_dialog()->set_mode(FileDialog::MODE_OPEN_FILE);
+		source = memnew( EditorLineEditFileChooser );
+		source->get_file_dialog()->set_access(EditorFileDialog::ACCESS_FILESYSTEM);
+		source->get_file_dialog()->set_mode(EditorFileDialog::MODE_OPEN_FILE);
 		source->get_file_dialog()->add_filter("*.ttf;TrueType");
 		source->get_file_dialog()->add_filter("*.otf;OpenType");
 		source->get_line_edit()->connect("text_entered",this,"_src_changed");
@@ -623,7 +626,7 @@ public:
 		font_size->set_max(256);
 		font_size->set_val(16);
 		font_size->connect("value_changed",this,"_font_size_changed");
-		dest = memnew( LineEditFileChooser );
+		dest = memnew( EditorLineEditFileChooser );
 		//
 		List<String> fl;
 		Ref<Font> font= memnew(Font);
@@ -1018,7 +1021,7 @@ Ref<Font> EditorFontImportPlugin::generate_font(const Ref<ResourceImportMetadata
 		int h = slot->bitmap.rows;
 		int p = slot->bitmap.pitch;
 
-		print_line("W: "+itos(w)+" P: "+itos(slot->bitmap.pitch));
+		//print_line("W: "+itos(w)+" P: "+itos(slot->bitmap.pitch));
 
 		if (font_mode==_EditorFontImportOptions::FONT_DISTANCE_FIELD) {
 

@@ -34,6 +34,7 @@
 #include "core_string_names.h"
 #include "translation.h"
 #include "os/os.h"
+#include "resource.h"
 
 #ifdef DEBUG_ENABLED
 
@@ -995,12 +996,44 @@ Variant Object::get_meta(const String& p_name) const {
 	return metadata[p_name];
 }
 
+
 Array Object::_get_property_list_bind() const {
 
 	List<PropertyInfo> lpi;
 	get_property_list(&lpi);
 	return convert_property_list(&lpi);
 }
+
+Array Object::_get_method_list_bind() const {
+
+	List<MethodInfo> ml;
+	get_method_list(&ml);
+	Array ret;
+
+	for(List<MethodInfo>::Element *E=ml.front();E;E=E->next()) {
+
+		Dictionary d;
+		d["name"]=E->get().name;
+		d["args"]=convert_property_list(&E->get().arguments);
+		Array da;
+		for(int i=0;i<E->get().default_arguments.size();i++)
+			da.push_back(E->get().default_arguments[i]);
+		d["default_args"]=da;
+		d["flags"]=E->get().flags;
+		d["id"]=E->get().id;
+		Dictionary r;
+		r["type"]=E->get().return_val.type;
+		r["hint"]=E->get().return_val.hint;
+		r["hint_string"]=E->get().return_val.hint_string;
+		d["return_type"]=r;
+		//va.push_back(d);
+		ret.push_back(d);
+	}
+
+	return ret;
+
+}
+
 DVector<String> Object::_get_meta_list_bind() const {
 
 	DVector<String> _metaret;
@@ -1282,6 +1315,23 @@ void Object::get_signal_list(List<MethodInfo> *p_signals ) const {
 	}
 }
 
+
+void Object::get_all_signal_connections(List<Connection> *p_connections) const {
+
+	const StringName *S=NULL;
+
+	while((S=signal_map.next(S))) {
+
+		const Signal *s=&signal_map[*S];
+
+		for(int i=0;i<s->slot_map.size();i++) {
+
+			p_connections->push_back(s->slot_map.getv(i).conn);
+		}
+	}
+
+}
+
 void Object::get_signal_connection_list(const StringName& p_signal,List<Connection> *p_connections) const {
 
 	const Signal *s=signal_map.getptr(p_signal);
@@ -1302,7 +1352,7 @@ Error Object::connect(const StringName& p_signal, Object *p_to_object, const Str
 	if (!s) {
 		bool signal_is_valid = ObjectTypeDB::has_signal(get_type_name(),p_signal);
 		if (!signal_is_valid) {
-			ERR_EXPLAIN("Attempt to connect to unexisting signal: "+p_signal);
+			ERR_EXPLAIN("Attempt to connect nonexistent signal '"+p_signal+"' to method '"+p_to_method+"'");
 			ERR_FAIL_COND_V(!signal_is_valid,ERR_INVALID_PARAMETER);
 		}
 		signal_map[p_signal]=Signal();
@@ -1339,7 +1389,7 @@ bool Object::is_connected(const StringName& p_signal, Object *p_to_object, const
 		bool signal_is_valid = ObjectTypeDB::has_signal(get_type_name(),p_signal);
 		if (signal_is_valid)
 			return false;
-		ERR_EXPLAIN("Unexisting signal: "+p_signal);
+		ERR_EXPLAIN("Nonexistent signal: "+p_signal);
 		ERR_FAIL_COND_V(!s,false);
 	}
 
@@ -1356,7 +1406,7 @@ void Object::disconnect(const StringName& p_signal, Object *p_to_object, const S
 	ERR_FAIL_NULL(p_to_object);
 	Signal *s = signal_map.getptr(p_signal);
 	if (!s) {
-		ERR_EXPLAIN("Unexisting signal: "+p_signal);
+		ERR_EXPLAIN("Nonexistent signal: "+p_signal);
 		ERR_FAIL_COND(!s);
 	}
 	if (s->lock>0) {
@@ -1367,7 +1417,7 @@ void Object::disconnect(const StringName& p_signal, Object *p_to_object, const S
 	Signal::Target target(p_to_object->get_instance_ID(),p_to_method);
 
 	if (!s->slot_map.has(target)) {
-		ERR_EXPLAIN("Disconnecting unexisting signal '"+p_signal+"', slot: "+itos(target._id)+":"+target.method);
+		ERR_EXPLAIN("Disconnecting nonexistent signal '"+p_signal+"', slot: "+itos(target._id)+":"+target.method);
 		ERR_FAIL();
 	}
 	int prev = p_to_object->connections.size();
@@ -1415,6 +1465,63 @@ StringName Object::tr(const StringName& p_message) const {
 
 }
 
+
+void Object::_clear_internal_resource_paths(const Variant &p_var) {
+
+	switch(p_var.get_type()) {
+
+		case Variant::OBJECT: {
+
+			RES r = p_var;
+			if (!r.is_valid())
+				return;
+
+			if (!r->get_path().begins_with("res://") || r->get_path().find("::")==-1)
+				return; //not an internal resource
+
+			Object *object=p_var;
+			if (!object)
+				return;
+
+			r->set_path("");
+			r->clear_internal_resource_paths();
+		} break;
+		case Variant::ARRAY: {
+
+			Array a=p_var;
+			for(int i=0;i<a.size();i++) {
+				_clear_internal_resource_paths(a[i]);
+			}
+
+		} break;
+		case Variant::DICTIONARY: {
+
+			Dictionary d=p_var;
+			List<Variant> keys;
+			d.get_key_list(&keys);
+
+			for (List<Variant>::Element *E=keys.front();E;E=E->next()) {
+
+				_clear_internal_resource_paths(E->get());
+				_clear_internal_resource_paths(d[E->get()]);
+			}
+		} break;
+	}
+
+}
+
+void Object::clear_internal_resource_paths() {
+
+	List<PropertyInfo> pinfo;
+
+	get_property_list(&pinfo);
+
+	for(List<PropertyInfo>::Element *E=pinfo.front();E;E=E->next()) {
+
+		_clear_internal_resource_paths(get(E->get().name));
+	}
+}
+
 void Object::_bind_methods() {
 
 	ObjectTypeDB::bind_method(_MD("get_type"),&Object::get_type);
@@ -1422,6 +1529,7 @@ void Object::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("set","property","value"),&Object::_set_bind);
 	ObjectTypeDB::bind_method(_MD("get","property"),&Object::_get_bind);
 	ObjectTypeDB::bind_method(_MD("get_property_list"),&Object::_get_property_list_bind);
+	ObjectTypeDB::bind_method(_MD("get_method_list"),&Object::_get_method_list_bind);
 	ObjectTypeDB::bind_method(_MD("notification","what"),&Object::notification,DEFVAL(false));
 	ObjectTypeDB::bind_method(_MD("get_instance_ID"),&Object::get_instance_ID);
 

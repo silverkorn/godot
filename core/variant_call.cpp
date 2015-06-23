@@ -285,6 +285,36 @@ static void _call_##m_type##_##m_method(Variant& r_ret,Variant& p_self,const Var
 	VCALL_LOCALMEM1R(String,pad_decimals);
 	VCALL_LOCALMEM1R(String,pad_zeros);
 
+	static void _call_String_to_ascii(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+
+		String *s = reinterpret_cast<String*>(p_self._data._mem);
+		CharString charstr = s->ascii();
+
+		ByteArray retval;
+		size_t len = charstr.length();
+		retval.resize(len);
+		ByteArray::Write w = retval.write();
+		copymem(w.ptr(), charstr.ptr(), len);
+		w = DVector<uint8_t>::Write();
+
+		r_ret = retval;
+	}
+
+	static void _call_String_to_utf8(Variant& r_ret,Variant& p_self,const Variant** p_args) {
+
+		String *s = reinterpret_cast<String*>(p_self._data._mem);
+		CharString charstr = s->utf8();
+
+		ByteArray retval;
+		size_t len = charstr.length();
+		retval.resize(len);
+		ByteArray::Write w = retval.write();
+		copymem(w.ptr(), charstr.ptr(), len);
+		w = DVector<uint8_t>::Write();
+
+		r_ret = retval;
+	}
+
 
 	VCALL_LOCALMEM0R(Vector2,normalized);
 	VCALL_LOCALMEM0R(Vector2,length);
@@ -1032,7 +1062,7 @@ Variant Variant::construct(const Variant::Type p_type,const Variant** p_args,int
 			case STRING_ARRAY: return (StringArray(*p_args[0]));
 			case VECTOR2_ARRAY: return (Vector2Array(*p_args[0])); 	// 25
 			case VECTOR3_ARRAY: return (Vector3Array(*p_args[0])); 	// 25
-			case COLOR_ARRAY: return (Color(*p_args[0]));
+			case COLOR_ARRAY: return (ColorArray(*p_args[0]));
 			default: return Variant();
 		}
 	}
@@ -1215,9 +1245,10 @@ _VariantCall::addfunc(Variant::m_vtype,Variant::m_ret,_SCS(#m_method),VCALL(m_cl
 	ADDFUNC0(STRING,STRING,String,capitalize,varray());
 	ADDFUNC2(STRING,STRING_ARRAY,String,split,STRING,"divisor",BOOL,"allow_empty",varray(true));
 	ADDFUNC2(STRING,REAL_ARRAY,String,split_floats,STRING,"divisor",BOOL,"allow_empty",varray(true));
-	ADDFUNC0(STRING,STRING,String,to_upper,varray());
 
+	ADDFUNC0(STRING,STRING,String,to_upper,varray());
 	ADDFUNC0(STRING,STRING,String,to_lower,varray());
+
 	ADDFUNC1(STRING,STRING,String,left,INT,"pos",varray());
 	ADDFUNC1(STRING,STRING,String,right,INT,"pos",varray());
 	ADDFUNC0(STRING,STRING,String,strip_edges,varray());
@@ -1248,6 +1279,10 @@ _VariantCall::addfunc(Variant::m_vtype,Variant::m_ret,_SCS(#m_method),VCALL(m_cl
 	ADDFUNC0(STRING,INT,String,hex_to_int,varray());
 	ADDFUNC1(STRING,STRING,String,pad_decimals,INT,"digits",varray());
 	ADDFUNC1(STRING,STRING,String,pad_zeros,INT,"digits",varray());
+
+	ADDFUNC0(STRING,STRING,String,to_ascii,varray());
+	ADDFUNC0(STRING,STRING,String,to_utf8,varray());
+
 
 	ADDFUNC0(VECTOR2,VECTOR2,Vector2,normalized,varray());
 	ADDFUNC0(VECTOR2,REAL,Vector2,length,varray());
