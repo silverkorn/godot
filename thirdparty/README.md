@@ -465,6 +465,18 @@ Files extracted from upstream source:
 - `tinyexr.{cc,h}`
 
 
+## tinyprocesslibrary
+
+- Upstream: https://gitlab.com/eidheim/tiny-process-library
+- Version: 2.0.2
+- License: MIT
+
+Files extracted from upstream source:
+
+- `process*.{cpp,hpp}`
+- LICENSE
+
+
 ## vhacd
 
 - Upstream: https://github.com/kmammou/v-hacd

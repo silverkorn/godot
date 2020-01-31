@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+Import('env')
+Import('env_modules')
+
+env_ipc = env_modules.Clone()
+
+# Thirdparty source files
+
+if env['builtin_ipc']:
+    thirdparty_dir = "#thirdparty/tinyprocesslibrary/"
+    thirdparty_sources = [
+        "process.cpp"
+    ]
+    if env["platform"] == "windows":
+        thirdparty_sources.append("process_win.cpp")
+    else:
+        thirdparty_sources.append("process_unix.cpp")
+    thirdparty_sources = [thirdparty_dir + file for file in thirdparty_sources]
+    env_ipc.Prepend(CPPPATH=[thirdparty_dir])
+    env_ipc.Append(CPPDEFINES=["GODOT_IPC"])
+
+    env_thirdparty = env_ipc.Clone()
+    env_thirdparty.disable_warnings()
+    env_thirdparty.add_source_files(env.modules_sources, thirdparty_sources)
+
+env_ipc.add_source_files(env.modules_sources, "*.cpp")
